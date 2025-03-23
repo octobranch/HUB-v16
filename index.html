@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CosmicHub | Gestión Documental Cuántica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --cosmic-primary: #0a0a2e;
+            --cosmic-secondary: #1a1a4a;
+            --neon-blue: #00f3ff;
+            --neon-pink: #ff00ff;
+            --particle-size: 6px;
+            --light-gray: rgba(255, 255, 255, 0.1);
+            --accent-color: #00f3ff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: 
+                radial-gradient(circle at 50% 50%, var(--cosmic-primary), var(--cosmic-secondary)),
+                linear-gradient(45deg, rgba(0, 243, 255, 0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(255, 0, 255, 0.05) 25%, transparent 25%);
+            background-size: 100% 100%, 60px 60px, 60px 60px;
+            color: #fff;
+            perspective: 2000px;
+            overflow: auto;
+            cursor: none;
+        }
+
+        .neural-network {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            background: 
+                repeating-linear-gradient(
+                    90deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(0, 243, 255, 0.05) 50px,
+                    rgba(0, 243, 255, 0.05) 100px
+                ),
+                repeating-linear-gradient(
+                    0deg,
+                    transparent,
+                    transparent 50px,
+                    rgba(255, 0, 255, 0.05) 50px,
+                    rgba(255, 0, 255, 0.05) 100px
+                );
+            animation: neural-move 20s linear infinite;
+        }
+
+        .quantum-particles {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            filter: blur(1px);
+        }
+
+        .quantum-particles span {
+            position: absolute;
+            background: radial-gradient(circle, var(--neon-blue) 20%, transparent 70%);
+            width: var(--particle-size);
+            height: var(--particle-size);
+            border-radius: 50%;
+            animation: quantum-drift 20s infinite linear;
+            opacity: 0.3;
+            transition: 0.4s all ease;
+            transform: translate3d(var(--tx, 0), var(--ty, 0), var(--tz, 0));
+        }
+
+        .hub-container {
+            position: relative;
+            z-index: 3;
+            transform-style: preserve-3d;
+            width: 100%;
+            max-width: 1800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+            animation: container-float 8s ease-in-out infinite;
+            filter: drop-shadow(0 0 50px rgba(0, 243, 255, 0.2));
+        }
+
+        .smart-sidebar {
+            background: rgba(20, 20, 50, 0.3);
+            backdrop-filter: blur(15px);
+            border-right: 2px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 0 50px rgba(0, 243, 255, 0.1),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            padding: 2rem 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .storage-status {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--neon-blue);
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            width: 65%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .nav-section {
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1.2rem;
+            margin: 0.3rem 0;
+            border-radius: 8px;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            text-decoration: none;
+            color: white;
+            gap: 1.2rem;
+            position: relative;
+            backdrop-filter: blur(5px);
+            border: 1px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(0, 243, 255, 0.1);
+            border-color: var(--neon-blue);
+            transform: translateZ(20px);
+        }
+
+        .nav-link.active {
+            background: rgba(255, 0, 255, 0.1);
+            box-shadow: inset 3px 0 0 var(--neon-pink);
+        }
+
+        .badge {
+            background: var(--neon-pink);
+            color: var(--cosmic-primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: auto;
+        }
+
+        .main-content {
+            padding: 2rem 3rem;
+            background: rgba(20, 20, 50, 0.2);
+            backdrop-filter: blur(20px);
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .smart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            gap: 1.5rem;
+        }
+
+        .search-container {
+            flex-grow: 1;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .search-bar {
+            width: 100%;
+            padding: 0.9rem 2rem 0.9rem 3rem;
+            border: 2px solid var(--neon-blue);
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .search-bar:focus {
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--neon-blue);
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .filter-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .filter-btn.active {
+            background: var(--neon-blue);
+            color: var(--cosmic-primary);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .enhanced-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .smart-card {
+            background: rgba(20, 20, 50, 0.3);
+            border: 2px solid var(--neon-blue);
+            border-radius: 12px;
+            padding: 1.2rem;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 
+                0 0 30px rgba(0, 243, 255, 0.1),
+                inset 0 0 15px rgba(255, 255, 255, 0.05);
+        }
+
+        .smart-card:hover {
+            transform: translateZ(50px);
+            box-shadow: 
+                0 0 100px rgba(0, 243, 255, 0.3),
+                inset 0 0 30px rgba(255, 255, 255, 0.1);
+        }
+
+        .file-preview {
+            height: 120px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid var(--neon-blue);
+        }
+
+        .file-actions {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .smart-card:hover .file-actions {
+            opacity: 1;
+        }
+
+        .action-btn {
+            background: rgba(0, 243, 255, 0.1);
+            padding: 0.4rem;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: var(--neon-blue);
+            color: var(--cosmic-primary);
+        }
+
+        .drag-drop-zone {
+            border: 2px dashed var(--neon-blue);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            margin: 1rem 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0, 243, 255, 0.05);
+            color: var(--neon-blue);
+        }
+
+        .drag-drop-zone:hover {
+            background: rgba(0, 243, 255, 0.1);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2);
+        }
+
+        .table-view {
+            display: none;
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            background: rgba(20, 20, 50, 0.3);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--neon-blue);
+        }
+
+        .table-view th,
+        .table-view td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .table-view th {
+            background: rgba(0, 243, 255, 0.1);
+        }
+
+        .view-controls {
+            display: flex;
+            gap: 1rem;
+            margin-left: auto;
+        }
+
+        .view-btn {
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--neon-blue);
+            color: var(--neon-blue);
+        }
+
+        .view-btn.active {
+            background: var(--neon-blue);
+            color: var(--cosmic-primary);
+        }
+
+        @keyframes neural-move {
+            from { background-position: 0 0; }
+            to { background-position: 1000px 1000px; }
+        }
+
+        @keyframes container-float {
+            0%, 100% { transform: translateY(0) rotateZ(0.5deg); }
+            50% { transform: translateY(-20px) rotateZ(-0.5deg); }
+        }
+
+        .interactive-cursor {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--neon-blue);
+            border-radius: 50%;
+            pointer-events: none;
+            mix-blend-mode: difference;
+            transform: translate(-50%, -50%);
+            transition: 
+                transform 0.3s,
+                width 0.3s,
+                height 0.3s,
+                opacity 0.3s;
+            z-index: 9999;
+            backdrop-filter: invert(1);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+        }
+
+        @media (max-width: 768px) {
+            .hub-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .smart-sidebar {
+                position: relative;
+                height: auto;
+            }
+            
+            .main-content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neural-network"></div>
+    <div class="quantum-particles"></div>
+    
+    <div class="hub-container">
+        <aside class="smart-sidebar">
+            <div class="storage-status">
+                <h4>Almacenamiento</h4>
+                <div class="progress-bar">
+                    <div class="progress-fill"></div>
+                </div>
+                <small>84 GB de 128 GB usado</small>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Navegación</div>
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-layer-group"></i>
+                    Todos los archivos
+                    <span class="badge">1,234</span>
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Recientes
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-star"></i>
+                    Destacados
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-trash"></i>
+                    Papelera
+                    <span class="badge">45</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-title">Categorías</div>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-folder"></i>
+                    Proyectos
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-database"></i>
+                    Datos
+                </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-lock"></i>
+                    Privados
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="smart-header">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="search" class="search-bar" placeholder="Buscar en 1,234 documentos..." id="searchInput">
+                </div>
+                
+                <div class="view-controls">
+                    <div class="view-btn active" onclick="toggleView('grid')">
+                        <i class="fas fa-th-large"></i>
+                    </div>
+                    <div class="view-btn" onclick="toggleView('table')">
+                        <i class="fas fa-list"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="filter-bar" id="filterBar">
+                <div class="filter-btn active" data-filter="all">
+                    <i class="fas fa-filter"></i>
+                    Todos
+                </div>
+                <div class="filter-btn" data-filter="pdf">
+                    <i class="fas fa-file-pdf"></i>
+                    PDF
+                </div>
+                <div class="filter-btn" data-filter="image">
+                    <i class="fas fa-file-image"></i>
+                    Imágenes
+                </div>
+                <div class="filter-btn" data-filter="folder">
+                    <i class="fas fa-folder"></i>
+                    Carpetas
+                </div>
+            </div>
+
+            <div class="drag-drop-zone" id="dropZone" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+                Arrastra archivos aquí o haz clic para subir
+                <input type="file" id="fileInput" hidden multiple>
+            </div>
+
+            <div class="enhanced-grid" id="gridView">
+                <!-- Elementos generados dinámicamente -->
+            </div>
+
+            <table class="table-view" id="tableView">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo</th>
+                        <th>Tamaño</th>
+                        <th>Última modificación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filas generadas dinámicamente -->
+                </tbody>
+            </table>
+        </main>
+    </div>
+
+    <script>
+        // Datos de ejemplo
+        const sampleFiles = [
+            {
+                name: 'Informe Final.pdf',
+                type: 'pdf',
+                size: '4.2 MB',
+                modified: 'Hoy 15:30',
+                icon: 'fa-file-pdf',
+                color: '#E74C3C'
+            },
+            {
+                name: 'Fotos Vacaciones',
+                type: 'folder',
+                items: '158',
+                modified: 'Ayer 09:45',
+                icon: 'fa-folder',
+                color: '#FFD700'
+            },
+            {
+                name: 'Diseño Portada.jpg',
+                type: 'image',
+                size: '2.8 MB',
+                modified: '15/06 14:20',
+                icon: 'fa-file-image',
+                color: '#27AE60'
+            }
+        ];
+
+        // Funcionalidad de vista
+        function toggleView(viewType) {
+            const gridView = document.getElementById('gridView');
+            const tableView = document.getElementById('tableView');
+            const viewBtns = document.querySelectorAll('.view-btn');
+
+            viewBtns.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            if(viewType === 'grid') {
+                gridView.style.display = 'grid';
+                tableView.style.display = 'none';
+            } else {
+                gridView.style.display = 'none';
+                tableView.style.display = 'table';
+            }
+        }
+
+        // Filtrado de archivos
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.dataset.filter;
+                filterFiles(filter);
+            });
+        });
+
+        function filterFiles(filterType) {
+            // Lógica de filtrado aquí
+        }
+
+        // Drag and Drop
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.dataTransfer.dropEffect = 'copy';
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const files = e.dataTransfer.files;
+            handleFileUpload(files);
+        }
+
+        // Subida de archivos
+        document.getElementById('dropZone').addEventListener('click', () => {
+            document.getElementById('fileInput').click();
+        });
+
+        document.getElementById('fileInput').addEventListener('change', (e) => {
+            handleFileUpload(e.target.files);
+        });
+
+        function handleFileUpload(files) {
+            // Actualizar interfaz con nuevos archivos
+            console.log('Archivos subidos:', files);
+            // Aquí podrías agregar los nuevos archivos a la lista
+        }
+
+        // Generar contenido inicial
+        function generateFileElements() {
+            const grid = document.getElementById('gridView');
+            const tableBody = document.querySelector('#tableView tbody');
+
+            sampleFiles.forEach(file => {
+                // Generar tarjetas para grid
+                const card = document.createElement('div');
+                card.className = 'smart-card';
+                card.innerHTML = `
+                    <div class="card-header">
+                        <i class="fas ${file.icon}" style="color: ${file.color};"></i>
+                        <div class="file-actions">
+                            <div class="action-btn" onclick="downloadFile('${file.name}')">
+                                <i class="fas fa-download"></i>
+                            </div>
+                            <div class="action-btn" onclick="shareFile('${file.name}')">
+                                <i class="fas fa-share"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="file-preview">
+                        <i class="fas ${file.icon}" style="font-size: 2.5rem; color: ${file.color};"></i>
+                    </div>
+                    <h3>${file.name}</h3>
+                    <div class="file-meta">
+                        <span>${file.size || file.items}</span>
+                        <span>${file.modified}</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+
+                // Generar filas para tabla
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <i class="fas ${file.icon}" style="margin-right: 0.5rem; color: ${file.color};"></i>
+                        ${file.name}
+                    </td>
+                    <td>${file.type.toUpperCase()}</td>
+                    <td>${file.size || '-'}</td>
+                    <td>${file.modified}</td>
+                    <td>
+                        <div class="action-btn" onclick="downloadFile('${file.name}')">
+                            <i class="fas fa-download"></i>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        // Funciones de ejemplo
+        function downloadFile(filename) {
+            console.log(`Descargando ${filename}...`);
+        }
+
+        function shareFile(filename) {
+            console.log(`Compartiendo ${filename}...`);
+        }
+
+        // Efectos cósmicos
+        document.addEventListener('mousemove', (e) => {
+            const cursor = document.createElement('div');
+            cursor.className = 'interactive-cursor';
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+            document.body.appendChild(cursor);
+            setTimeout(() => cursor.remove(), 100);
+
+            document.querySelectorAll('.smart-card, .nav-link').forEach(element => {
+                const rect = element.getBoundingClientRect();
+                const centerX = rect.left + rect.width/2;
+                const centerY = rect.top + rect.height/2;
+                const deltaX = e.clientX - centerX;
+                const deltaY = e.clientY - centerY;
+                
+                element.style.transform = `
+                    rotateX(${deltaY/20}deg)
+                    rotateY(${-deltaX/20}deg)
+                    translateZ(${Math.sqrt(deltaX**2 + deltaY**2)/50}px)
+                `;
+            });
+        });
+
+        function createParticles() {
+            const particlesContainer = document.createElement('div');
+            particlesContainer.className = 'quantum-particles';
+            for(let i = 0; i < 100; i++) {
+                const particle = document.createElement('span');
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                particle.style.animationDelay = `${Math.random() * 20}s`;
+                particlesContainer.appendChild(particle);
+            }
+            document.body.appendChild(particlesContainer);
+        }
+
+        // Inicializar
+        generateFileElements();
+        createParticles();
+    </script>
+</body>
+</html>
